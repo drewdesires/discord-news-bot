@@ -1,0 +1,36 @@
+import feedparser
+from discord_webhook import DiscordWebhook
+
+# Define the RSS feed URL
+RSS_FEED_URL = "https://www.coindesk.com/livewire/"
+
+# Define your Discord webhook URL
+DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1192044575037079623/y7Ezi2sVRSuBGU7EUV06U4p1wy9GqueOh_zYGelakNmxVy8DcTUDiJCl3v6oEzY8YvPH"
+
+def get_latest_news():
+    # Parse the RSS feed
+    feed = feedparser.parse(RSS_FEED_URL)
+
+    # Extract the latest news item
+    latest_news = feed.entries[0]
+
+    # Extract relevant information
+    title = latest_news.title
+    link = latest_news.link
+
+    return title, link
+
+def send_news_to_discord():
+    # Get the latest news
+    title, link = get_latest_news()
+
+    # Create a Discord webhook instance
+    webhook = DiscordWebhook(url=DISCORD_WEBHOOK_URL, content=f"**{title}**\nRead more: {link}")
+
+    # Send the message
+    response = webhook.execute()
+
+    print("News sent to Discord!")
+
+if __name__ == "__main__":
+    send_news_to_discord()
